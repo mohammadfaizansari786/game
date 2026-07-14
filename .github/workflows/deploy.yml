@@ -27,4 +27,10 @@ jobs:
       - name: Deploy spider bundle
         env:
           SHUB_APIKEY: ${{ secrets.SHUB_APIKEY }}
-        run: shub deploy 000000
+          SHUB_PROJECT_ID: ${{ secrets.SHUB_PROJECT_ID }}
+        run: |
+          if [ -z "$SHUB_PROJECT_ID" ]; then
+            echo "::error::Missing SHUB_PROJECT_ID secret. Configure the Scrapy Cloud project ID in repository secrets."
+            exit 1
+          fi
+          shub deploy "$SHUB_PROJECT_ID"

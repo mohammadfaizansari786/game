@@ -29,8 +29,12 @@ jobs:
           SHUB_APIKEY: ${{ secrets.SHUB_APIKEY }}
           SHUB_PROJECT_ID: ${{ secrets.SHUB_PROJECT_ID }}
         run: |
+          if [ -z "$SHUB_APIKEY" ]; then
+            echo "::warning::Missing SHUB_APIKEY secret. Skipping Scrapy Cloud deployment."
+            exit 0
+          fi
           if [ -z "$SHUB_PROJECT_ID" ]; then
-            echo "::error::Missing SHUB_PROJECT_ID secret. Configure the Scrapy Cloud project ID in repository secrets."
-            exit 1
+            echo "::warning::Missing SHUB_PROJECT_ID secret. Skipping Scrapy Cloud deployment."
+            exit 0
           fi
           shub deploy "$SHUB_PROJECT_ID"
